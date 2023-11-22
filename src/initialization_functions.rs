@@ -27,6 +27,14 @@ pub mod initialization_functions {
                     Arg::new("todo-list-id")
                     )
                 )
+            .subcommand(
+                Command::new("remove")
+                .about("Remove ToDo Elements from the database by index.")
+                .arg(
+                    Arg::new("todo-element-id")
+                    .required(true)
+                    )
+                )
             .get_matches()
     }
 

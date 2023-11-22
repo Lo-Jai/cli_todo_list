@@ -5,7 +5,6 @@ pub mod command_logic;
 use initialization_functions::initialization_functions::*;
 use command_logic::command_logic::*;
 
-use database_structures::database_structures::ToDoList;
 use sqlx::{self, SqliteConnection, Connection};
 
 #[tokio::main]
@@ -13,7 +12,7 @@ async fn main() -> () {
     // Establish connection to Sqlite database, initialize vector of valid subcommands, set up CLI
     // command structure and database structure if database is not initialized.
     let mut connection: SqliteConnection = SqliteConnection::connect("todo.db").await.unwrap();
-    let subcommands: Vec<&str> = vec!["add"];
+    let subcommands: Vec<&str> = vec!["add", "show", "remove"];
     let match_results = setup_command_structure();
     database_schema(&mut connection).await;
 
@@ -37,17 +36,16 @@ async fn main() -> () {
             add(&mut connection, argument_matches).await;
         }
 
+        "show" => {
+            show(&mut connection, argument_matches).await;
+        }
+
+        "remove" => {
+            remove(&mut connection, argument_matches).await;
+        }
+
         _ => {}
     }
-
-
-    let primary_list_test = ToDoList {
-        id: Some(1),
-        name: "test".to_owned(),
-        is_primary: true
-    };
-
-    primary_list_test.display_list(&mut connection).await;
 }
 
 
