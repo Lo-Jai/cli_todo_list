@@ -1,9 +1,9 @@
 pub mod command_logic {
-    use std::{str::FromStr, rc::Rc};
+    use std::{str::FromStr};
     use crate::database_structures::database_structures::{ToDoElement, ToDoList};
 
     use clap::ArgMatches;
-    use sqlx::{SqliteConnection, Row, Sqlite, SqlitePool, Connection};
+    use sqlx::{SqliteConnection, Row, Sqlite, Connection};
 
     // this function handles the show todo element command.
     pub async fn add(database_connection: &mut SqliteConnection, arguments: &ArgMatches) {
@@ -46,7 +46,7 @@ pub mod command_logic {
                     .bind(list_name).fetch_one(database_connection).await.unwrap()
                     .get::<i32, usize>(0);
 
-                let mut new_db_connection = SqliteConnection::connect("todo.db").await.unwrap();
+                let mut new_db_connection = SqliteConnection::connect(&std::env::var("TODO_DATABASE_LOCATION").unwrap()).await.unwrap();
 
                 let table_contents_query = sqlx::query("
                                                        SELECT * FROM todo_elements

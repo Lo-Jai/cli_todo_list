@@ -11,7 +11,7 @@ use sqlx::{self, SqliteConnection, Connection};
 async fn main() -> () {
     // Establish connection to Sqlite database, initialize vector of valid subcommands, set up CLI
     // command structure and database structure if database is not initialized.
-    let mut connection: SqliteConnection = SqliteConnection::connect("todo.db").await.unwrap();
+    let mut connection: SqliteConnection = SqliteConnection::connect(&std::env::var("TODO_DATABASE_LOCATION").unwrap()).await.unwrap();
     let subcommands: Vec<&str> = vec!["add","add-list", "show", "remove", "status-complete", "status-incomplete"];
     let match_results = setup_command_structure();
     database_schema(&mut connection).await;
