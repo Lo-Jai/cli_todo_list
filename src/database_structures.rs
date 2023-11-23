@@ -71,7 +71,7 @@ pub mod database_structures {
                 Some(list_name) => {
                     let list_query = sqlx::query::<Sqlite>("
                                                            SELECT * FROM todo_lists
-                                                           WHERE name = $1
+                                                           WHERE list_name = $1
                                                            ")
                         .bind(list_name);
 
@@ -122,7 +122,7 @@ pub mod database_structures {
 
     // Rust structure which represents a row in the ToDo list database table.
     pub struct ToDoList {
-        pub id: Option<i32>,
+        pub id: Option<i64>,
         pub name: String,
         pub is_primary: bool
     }
@@ -133,6 +133,24 @@ pub mod database_structures {
                 id: None,
                 name: name.to_owned(),
                 is_primary: false
+            }
+        }
+
+        // Add ToDoList to the database in the case it is not already represented
+        pub async fn add_to_database(&mut self, database_connection: &mut SqliteConnection) {
+            match self.id {
+                Some(_) => panic!("Attemeted add off ToDo List to database. Element already represents."),
+                None => {
+                    let row_id = sqlx::query::<Sqlite>("
+                                                       INSERT INTO todo_lists (list_name, is_primary)
+                                                       VALUES ($1, $2) 
+                                                       ")
+                        .bind(&self.name)
+                        .bind(self.is_primary)
+                        .execute(database_connection).await.unwrap().last_insert_rowid();
+
+                    self.id = Some(row_id);
+                }
             }
         }
 

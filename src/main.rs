@@ -12,7 +12,7 @@ async fn main() -> () {
     // Establish connection to Sqlite database, initialize vector of valid subcommands, set up CLI
     // command structure and database structure if database is not initialized.
     let mut connection: SqliteConnection = SqliteConnection::connect("todo.db").await.unwrap();
-    let subcommands: Vec<&str> = vec!["add", "show", "remove"];
+    let subcommands: Vec<&str> = vec!["add","add-list", "show", "remove", "status-complete", "status-incomplete"];
     let match_results = setup_command_structure();
     database_schema(&mut connection).await;
 
@@ -36,12 +36,24 @@ async fn main() -> () {
             add(&mut connection, argument_matches).await;
         }
 
+        "add-list" => {
+            add_list(&mut connection, argument_matches).await;
+        }
+
         "show" => {
             show(&mut connection, argument_matches).await;
         }
 
         "remove" => {
             remove(&mut connection, argument_matches).await;
+        }
+
+        "status-complete" => {
+            mark_complete(&mut connection, argument_matches).await;
+        }
+
+        "status-incomplete" => {
+            mark_incomplete(&mut connection, argument_matches).await;
         }
 
         _ => {}
@@ -53,6 +65,7 @@ async fn main() -> () {
 mod tests {
     use database_structures::database_structures::{ToDoElement, Status};
     use initialization_functions::initialization_functions::database_schema;
+    use command_logic;
     use sqlx::{SqliteConnection, Row};
     use super::*;
 
@@ -80,6 +93,11 @@ mod tests {
 
         assert!(test_element.get_id().unwrap() == 1);
         assert!(test_element.get_list_id().unwrap() == 1);
+    }
+
+    #[tokio::test]
+    async fn test_remove_command() {
+        //todo!();
     }
 
 

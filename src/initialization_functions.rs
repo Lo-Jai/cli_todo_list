@@ -15,6 +15,16 @@ pub mod initialization_functions {
                     )
                 .arg(
                     Arg::new("list-name")
+                    .long("ln")
+                    )
+                )
+            .subcommand(
+                Command::new("add-list")
+                .visible_alias("addl")
+                .about("Add a ToDo List to the database.")
+                .arg(
+                    Arg::new("list-name")
+                    .required(true)
                     )
                 )
             .subcommand(
@@ -26,10 +36,32 @@ pub mod initialization_functions {
                 .arg(
                     Arg::new("todo-list-id")
                     )
+                .arg(
+                    Arg::new("list-name")
+                    .long("ln")
+                    )
                 )
             .subcommand(
                 Command::new("remove")
                 .about("Remove ToDo Elements from the database by index.")
+                .arg(
+                    Arg::new("todo-element-id")
+                    .required(true)
+                    )
+                )
+            .subcommand(
+                Command::new("status-complete")
+                .about("Toggle the completion status of a ToDo Element to complete.")
+                .visible_alias("mark")
+                .arg(
+                    Arg::new("todo-element-id")
+                    .required(true)
+                    )
+                )
+            .subcommand(
+                Command::new("status-incomplete")
+                .about("Toggle the completion status of a ToDo Element to incomplete.")
+                .visible_alias("unmark")
                 .arg(
                     Arg::new("todo-element-id")
                     .required(true)
