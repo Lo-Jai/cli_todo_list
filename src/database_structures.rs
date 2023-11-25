@@ -61,7 +61,7 @@ pub mod database_structures {
 
         // add self to database while ensuring that internal state reflects that of the database
         // addition (update id and list_id fields).
-        pub async fn add_to_database(&mut self, database_connection: &mut SqliteConnection, todo_list_name: Option<&str>) {
+        pub async fn add_to_database(&mut self, database_connection: &mut SqliteConnection, todo_list_name: Option<&String>) {
             let status = match self.status {
                 Status::Incomplete => 0,
                 Status::Complete => 1
